@@ -114,15 +114,13 @@ const AsciiArtScene = () => {
         let camera, scene, renderer, effect;
         let phoneGroup;
         let animationFrameId;
-
-        const start = Date.now();
+        let isInitialized = false;
         
-        // This timeout gives the browser a moment to calculate the layout.
-        const startTimeout = setTimeout(() => {
-            const width = currentMount.clientWidth;
-            const height = currentMount.clientHeight;
-            
-            if (width === 0 || height === 0) return;
+        const start = Date.now();
+
+        const init = (width, height) => {
+            if (isInitialized) return;
+            isInitialized = true;
 
             camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
             camera.position.set(0, 150, 400); 
@@ -214,14 +212,11 @@ const AsciiArtScene = () => {
             effect.setSize(width, height);
             currentMount.appendChild(effect.domElement);
             
-            window.addEventListener('resize', onWindowResize);
             animate();
-        }, 10); // A small delay is often enough
+        };
         
-        const onWindowResize = () => {
-            if (!currentMount || !renderer) return;
-            const width = currentMount.clientWidth;
-            const height = currentMount.clientHeight;
+        const onWindowResize = (width, height) => {
+            if (!renderer) return;
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
             renderer.setSize(width, height);
@@ -230,7 +225,6 @@ const AsciiArtScene = () => {
         
         const animate = () => {
             if (!renderer) return;
-
             animationFrameId = requestAnimationFrame(animate);
             const timer = Date.now() - start;
             const ringSpeed = 0.2; 
@@ -241,10 +235,22 @@ const AsciiArtScene = () => {
             scene.rotation.y = timer * 0.0002;
             effect.render(scene, camera);
         };
+
+        const resizeObserver = new ResizeObserver(entries => {
+            if (entries[0]) {
+                const { width, height } = entries[0].contentRect;
+                if (!isInitialized) {
+                    init(width, height);
+                } else {
+                    onWindowResize(width, height);
+                }
+            }
+        });
+
+        resizeObserver.observe(currentMount);
         
         return () => {
-            clearTimeout(startTimeout);
-            window.removeEventListener('resize', onWindowResize);
+            resizeObserver.disconnect();
             cancelAnimationFrame(animationFrameId);
             if (currentMount && effect && effect.domElement) {
                 if (currentMount.contains(effect.domElement)) {
