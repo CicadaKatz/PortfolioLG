@@ -122,7 +122,6 @@ const AsciiArtScene = () => {
             const width = currentMount.clientWidth;
             const height = currentMount.clientHeight;
             
-            // If the container isn't ready, don't initialize.
             if (width === 0 || height === 0) return;
 
             camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
@@ -144,35 +143,23 @@ const AsciiArtScene = () => {
             phoneGroup = new THREE.Group();
             const material = new THREE.MeshPhongMaterial({ flatShading: true, color: 0xcccccc });
 
-            const baseShape = new THREE.Shape();
-            baseShape.moveTo(-100, -80);
-            baseShape.lineTo(100, -80);
-            baseShape.lineTo(120, 80);
-            baseShape.lineTo(-120, 80);
-            baseShape.closePath();
-            const baseExtrudeSettings = { depth: 60, bevelEnabled: false };
-            const baseGeometry = new THREE.ExtrudeGeometry(baseShape, baseExtrudeSettings);
-            baseGeometry.rotateX(Math.PI / 2);
-            baseGeometry.translate(0, -30, 0);
-
-            const cradleShape = new THREE.Shape();
-            cradleShape.moveTo(0,0);
-            cradleShape.absarc(0, 20, 20, Math.PI, Math.PI * 2, false);
-            cradleShape.lineTo(20, 0);
-            cradleShape.lineTo(0,0);
-            const cradleExtrudeSettings = { depth: 160, bevelEnabled: false };
-            const cradleGeometry = new THREE.ExtrudeGeometry(cradleShape, cradleExtrudeSettings);
+            const phoneBaseShape = new THREE.Shape();
+            phoneBaseShape.moveTo(-120, 80);
+            phoneBaseShape.lineTo(-70, 80);
+            phoneBaseShape.absarc(-50, 60, 20, Math.PI / 2, -Math.PI / 2, true);
+            phoneBaseShape.lineTo(30, 40);
+            phoneBaseShape.absarc(50, 60, 20, -Math.PI / 2, Math.PI / 2, false);
+            phoneBaseShape.lineTo(120, 80);
+            phoneBaseShape.lineTo(100, -80);
+            phoneBaseShape.lineTo(-100, -80);
+            phoneBaseShape.closePath();
             
-            const cradle1Geometry = cradleGeometry.clone();
-            cradle1Geometry.rotateY(Math.PI/2);
-            cradle1Geometry.translate(-50, 25, 80);
-            
-            const cradle2Geometry = cradleGeometry.clone();
-            cradle2Geometry.rotateY(Math.PI/2);
-            cradle2Geometry.translate(50, 25, 80);
+            const extrudeSettings = { depth: 60, bevelEnabled: false };
+            const solidBaseGeometry = new THREE.ExtrudeGeometry(phoneBaseShape, extrudeSettings);
+            solidBaseGeometry.rotateX(Math.PI / 2);
+            solidBaseGeometry.translate(0, -30, 0);
 
-            const mergedBaseGeometry = mergeGeometries([baseGeometry, cradle1Geometry, cradle2Geometry]);
-            const solidBase = new THREE.Mesh(mergedBaseGeometry, material);
+            const solidBase = new THREE.Mesh(solidBaseGeometry, material);
             phoneGroup.add(solidBase);
 
             const dialPlate = new THREE.Mesh(new THREE.CylinderGeometry(80, 80, 10, 32), material);
@@ -241,8 +228,10 @@ const AsciiArtScene = () => {
         };
         
         const animate = () => {
-            // FINAL FIX: Add a guard to prevent animation before the canvas is ready
-            if (!renderer) return;
+            if (!renderer) {
+                animationFrameId = requestAnimationFrame(animate);
+                return
+            };
 
             animationFrameId = requestAnimationFrame(animate);
             const timer = Date.now() - start;
