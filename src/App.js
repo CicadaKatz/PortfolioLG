@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
+// REMOVED: Unnecessary and build-breaking import of mergeGeometries
 
 //================================================================================
 // THREE.js ASCII Effect
@@ -143,6 +143,7 @@ const AsciiArtScene = () => {
             phoneGroup = new THREE.Group();
             const material = new THREE.MeshPhongMaterial({ flatShading: true, color: 0xcccccc });
 
+            // FINAL ARTIFACT FIX: The base and cradle are now a single, unified shape.
             const phoneBaseShape = new THREE.Shape();
             phoneBaseShape.moveTo(-120, 80);
             phoneBaseShape.lineTo(-70, 80);
@@ -230,8 +231,8 @@ const AsciiArtScene = () => {
         const animate = () => {
             if (!renderer) {
                 animationFrameId = requestAnimationFrame(animate);
-                return
-            };
+                return;
+            }
 
             animationFrameId = requestAnimationFrame(animate);
             const timer = Date.now() - start;
