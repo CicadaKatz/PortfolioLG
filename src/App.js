@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-// REMOVED: Unnecessary and build-breaking import of mergeGeometries
 
 //================================================================================
 // THREE.js ASCII Effect
@@ -117,8 +116,9 @@ const AsciiArtScene = () => {
         let animationFrameId;
 
         const start = Date.now();
-
-        const init = () => {
+        
+        // This timeout gives the browser a moment to calculate the layout.
+        const startTimeout = setTimeout(() => {
             const width = currentMount.clientWidth;
             const height = currentMount.clientHeight;
             
@@ -142,8 +142,7 @@ const AsciiArtScene = () => {
 
             phoneGroup = new THREE.Group();
             const material = new THREE.MeshPhongMaterial({ flatShading: true, color: 0xcccccc });
-
-            // FINAL ARTIFACT FIX: The base and cradle are now a single, unified shape.
+            
             const phoneBaseShape = new THREE.Shape();
             phoneBaseShape.moveTo(-120, 80);
             phoneBaseShape.lineTo(-70, 80);
@@ -216,10 +215,11 @@ const AsciiArtScene = () => {
             currentMount.appendChild(effect.domElement);
             
             window.addEventListener('resize', onWindowResize);
-        };
+            animate();
+        }, 10); // A small delay is often enough
         
         const onWindowResize = () => {
-            if (!currentMount) return;
+            if (!currentMount || !renderer) return;
             const width = currentMount.clientWidth;
             const height = currentMount.clientHeight;
             camera.aspect = width / height;
@@ -229,10 +229,7 @@ const AsciiArtScene = () => {
         };
         
         const animate = () => {
-            if (!renderer) {
-                animationFrameId = requestAnimationFrame(animate);
-                return;
-            }
+            if (!renderer) return;
 
             animationFrameId = requestAnimationFrame(animate);
             const timer = Date.now() - start;
@@ -244,11 +241,9 @@ const AsciiArtScene = () => {
             scene.rotation.y = timer * 0.0002;
             effect.render(scene, camera);
         };
-
-        init();
-        animate();
         
         return () => {
+            clearTimeout(startTimeout);
             window.removeEventListener('resize', onWindowResize);
             cancelAnimationFrame(animationFrameId);
             if (currentMount && effect && effect.domElement) {
