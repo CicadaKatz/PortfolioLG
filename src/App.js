@@ -6,7 +6,7 @@ import * as THREE from 'three';
 //================================================================================
 const AsciiEffect = ( renderer, charSet = ' .:-=+*#%@', options = {} ) => {
     const fCharSet = charSet;
-    const bResolution = !options.resolution ? 0.20 : options.resolution;
+    const bResolution = !options.resolution ? 0.15 : options.resolution; // Reduced resolution for better performance
     const bInvert = !options.invert ? false : options.invert;
 
     let iWidth, iHeight;
@@ -43,6 +43,7 @@ const AsciiEffect = ( renderer, charSet = ' .:-=+*#%@', options = {} ) => {
         oAscii.style.margin = '0px';
         oAscii.style.padding = '0px';
         oAscii.style.letterSpacing = '-0.15em';
+        oAscii.style.fontSize = '8px'; // Make font smaller for better detail
         let sTxt = '';
         for (let i = 0; i < iCellsX * iCellsY; i++) {
             sTxt += ' ';
@@ -102,6 +103,234 @@ const AsciiEffect = ( renderer, charSet = ' .:-=+*#%@', options = {} ) => {
 };
 
 //================================================================================
+// Styles
+//================================================================================
+const styles = `
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        background-color: #D7E7E9;
+        color: #5A768A;
+        line-height: 1.6;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+    
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        min-height: 100vh;
+    }
+    
+    @media (max-width: 768px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    .navigation {
+        padding: 3rem 2rem;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: #D7E7E9;
+        border-right: 1px solid #C2D7DD;
+    }
+    
+    .logo {
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: #5A768A;
+        letter-spacing: 0.1em;
+        margin-bottom: auto;
+    }
+    
+    .nav-list {
+        list-style: none;
+    }
+    
+    .nav-item {
+        margin-bottom: 1rem;
+    }
+    
+    .nav-link {
+        font-size: 1.125rem;
+        color: #6F90A8;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .nav-link:hover {
+        color: #5A768A;
+    }
+    
+    .main-content {
+        background-color: #D7E7E9;
+    }
+    
+    .hero-section {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        padding: 4rem 3rem;
+        justify-content: center;
+        align-items: flex-start;
+    }
+    
+    .hero-title {
+        position: relative;
+        z-index: 10;
+        font-size: clamp(3rem, 8vw, 6rem);
+        font-weight: 800;
+        color: #5A768A;
+        line-height: 0.9;
+        margin-bottom: 2rem;
+    }
+    
+    .ascii-container {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        max-width: 600px;
+        z-index: 5;
+    }
+    
+    .ascii-scene {
+        width: 100%;
+        aspect-ratio: 16/9;
+        max-height: 500px;
+        background-color: #D7E7E9;
+        border-radius: 8px;
+        border: 2px solid #C2D7DD;
+        overflow: hidden;
+    }
+    
+    .section {
+        min-height: 50vh;
+        padding: 4rem 3rem;
+        border-top: 1px solid #C2D7DD;
+    }
+    
+    .section-title {
+        font-size: clamp(2.5rem, 6vw, 4rem);
+        font-weight: bold;
+        color: #5A768A;
+        margin-bottom: 3rem;
+    }
+    
+    .clients-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #6F90A8;
+    }
+    
+    .work-item {
+        margin-bottom: 3rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .work-item:hover .work-title {
+        color: #5A768A;
+    }
+    
+    .work-item:hover .arrow {
+        transform: translateX(8px);
+    }
+    
+    .work-date {
+        color: #A3B5C0;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .work-title {
+        font-size: 1.875rem;
+        color: #6F90A8;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+    
+    .arrow {
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+    
+    .achievements-list {
+        margin-bottom: 2rem;
+    }
+    
+    .achievement-category {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: #6F90A8;
+        margin-bottom: 1rem;
+    }
+    
+    .achievement-items {
+        list-style: disc;
+        list-style-position: inside;
+        color: #6F90A8;
+    }
+    
+    .contact-email {
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
+        color: #6F90A8;
+        text-decoration: none;
+        transition: color 0.3s ease;
+        display: block;
+        margin-bottom: 1rem;
+    }
+    
+    .contact-email:hover {
+        color: #5A768A;
+    }
+    
+    .contact-note {
+        color: #A3B5C0;
+        margin-bottom: 2rem;
+    }
+    
+    .social-list {
+        list-style: none;
+    }
+    
+    .social-link {
+        color: #6F90A8;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    
+    .social-link:hover {
+        color: #5A768A;
+    }
+    
+    .footer {
+        text-align: center;
+        padding: 2rem;
+        color: #A3B5C0;
+        font-size: 0.875rem;
+        border-top: 1px solid #C2D7DD;
+    }
+`;
+
+//================================================================================
 // React Components
 //================================================================================
 const AsciiArtScene = () => {
@@ -123,90 +352,143 @@ const AsciiArtScene = () => {
             isInitialized = true;
 
             camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
-            camera.position.set(0, 150, 400); 
+            camera.position.set(0, 200, 300); // Moved camera closer
 
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0, 0, 0);
 
-            const pointLight1 = new THREE.PointLight(0xffffff, 4, 0, 0);
-            pointLight1.position.set(500, 500, 500);
+            const pointLight1 = new THREE.PointLight(0xffffff, 6, 0, 0);
+            pointLight1.position.set(400, 400, 400);
             scene.add(pointLight1);
 
-            const pointLight2 = new THREE.PointLight(0xffffff, 2, 0, 0);
-            pointLight2.position.set(-500, -500, -500);
+            const pointLight2 = new THREE.PointLight(0xffffff, 3, 0, 0);
+            pointLight2.position.set(-400, -400, -400);
             scene.add(pointLight2);
             
-            scene.add(new THREE.AmbientLight(0xaaaaaa, 1));
+            scene.add(new THREE.AmbientLight(0xaaaaaa, 1.5));
 
             phoneGroup = new THREE.Group();
-            const material = new THREE.MeshPhongMaterial({ flatShading: true, color: 0xcccccc });
+            const material = new THREE.MeshPhongMaterial({ 
+                flatShading: true, 
+                color: 0xcccccc,
+                shininess: 30
+            });
             
+            // Scale factor to make phone bigger
+            const scale = 1.8;
+            
+            // Phone base - made bigger and more detailed
             const phoneBaseShape = new THREE.Shape();
-            phoneBaseShape.moveTo(-120, 80);
-            phoneBaseShape.lineTo(-70, 80);
-            phoneBaseShape.absarc(-50, 60, 20, Math.PI / 2, -Math.PI / 2, true);
-            phoneBaseShape.lineTo(30, 40);
-            phoneBaseShape.absarc(50, 60, 20, -Math.PI / 2, Math.PI / 2, false);
-            phoneBaseShape.lineTo(120, 80);
-            phoneBaseShape.lineTo(100, -80);
-            phoneBaseShape.lineTo(-100, -80);
+            phoneBaseShape.moveTo(-120 * scale, 80 * scale);
+            phoneBaseShape.lineTo(-70 * scale, 80 * scale);
+            phoneBaseShape.absarc(-50 * scale, 60 * scale, 20 * scale, Math.PI / 2, -Math.PI / 2, true);
+            phoneBaseShape.lineTo(30 * scale, 40 * scale);
+            phoneBaseShape.absarc(50 * scale, 60 * scale, 20 * scale, -Math.PI / 2, Math.PI / 2, false);
+            phoneBaseShape.lineTo(120 * scale, 80 * scale);
+            phoneBaseShape.lineTo(100 * scale, -80 * scale);
+            phoneBaseShape.lineTo(-100 * scale, -80 * scale);
             phoneBaseShape.closePath();
             
-            const extrudeSettings = { depth: 60, bevelEnabled: false };
+            const extrudeSettings = { depth: 60 * scale, bevelEnabled: true, bevelSize: 2, bevelThickness: 2 };
             const solidBaseGeometry = new THREE.ExtrudeGeometry(phoneBaseShape, extrudeSettings);
             solidBaseGeometry.rotateX(Math.PI / 2);
-            solidBaseGeometry.translate(0, -30, 0);
+            solidBaseGeometry.translate(0, -30 * scale, 0);
 
             const solidBase = new THREE.Mesh(solidBaseGeometry, material);
             phoneGroup.add(solidBase);
 
-            const dialPlate = new THREE.Mesh(new THREE.CylinderGeometry(80, 80, 10, 32), material);
-            dialPlate.position.set(0, 18, 0);
+            // Dial plate - bigger and more prominent
+            const dialPlate = new THREE.Mesh(
+                new THREE.CylinderGeometry(80 * scale, 80 * scale, 10 * scale, 32), 
+                material
+            );
+            dialPlate.position.set(0, 18 * scale, 0);
             phoneGroup.add(dialPlate);
 
-            const holeRadius = 10;
-            const dialRadius = 55;
+            // Dial holes - bigger and more visible
+            const holeRadius = 10 * scale;
+            const dialRadius = 55 * scale;
             for (let i = 0; i < 10; i++) {
                 const angle = (i / 10) * Math.PI * 2;
-                const hole = new THREE.Mesh(new THREE.CylinderGeometry(holeRadius, holeRadius, 12, 16), material);
-                hole.position.set(Math.cos(angle) * dialRadius, 18, Math.sin(angle) * dialRadius);
+                const hole = new THREE.Mesh(
+                    new THREE.CylinderGeometry(holeRadius, holeRadius, 12 * scale, 16), 
+                    new THREE.MeshPhongMaterial({ color: 0x333333 })
+                );
+                hole.position.set(
+                    Math.cos(angle) * dialRadius, 
+                    18 * scale, 
+                    Math.sin(angle) * dialRadius
+                );
                 phoneGroup.add(hole);
             }
-            const fingerStop = new THREE.Mesh(new THREE.TorusGeometry(8, 4, 8, 20), material);
-            fingerStop.position.set(70, 18, 50);
+
+            // Finger stop
+            const fingerStop = new THREE.Mesh(
+                new THREE.TorusGeometry(8 * scale, 4 * scale, 8, 20), 
+                material
+            );
+            fingerStop.position.set(70 * scale, 18 * scale, 50 * scale);
             fingerStop.rotation.x = Math.PI / 2;
             phoneGroup.add(fingerStop);
 
+            // Handset - more detailed and bigger
             const handset = new THREE.Group();
             const handleCurve = new THREE.CatmullRomCurve3([
-                new THREE.Vector3(-80, 0, 0), new THREE.Vector3(-40, 20, 0),
-                new THREE.Vector3(40, 20, 0), new THREE.Vector3(80, 0, 0)
+                new THREE.Vector3(-80 * scale, 0, 0), 
+                new THREE.Vector3(-40 * scale, 20 * scale, 0),
+                new THREE.Vector3(40 * scale, 20 * scale, 0), 
+                new THREE.Vector3(80 * scale, 0, 0)
             ]);
-            const handleGeometry = new THREE.TubeGeometry(handleCurve, 20, 15, 8, false);
+            const handleGeometry = new THREE.TubeGeometry(handleCurve, 20, 15 * scale, 8, false);
             const handle = new THREE.Mesh(handleGeometry, material);
-            const earpiece = new THREE.Mesh(new THREE.CylinderGeometry(35, 30, 25, 16), material);
-            earpiece.position.x = -90;
-            const mouthpiece = new THREE.Mesh(new THREE.CylinderGeometry(35, 30, 25, 16), material);
-            mouthpiece.position.x = 90;
+            
+            const earpiece = new THREE.Mesh(
+                new THREE.CylinderGeometry(35 * scale, 30 * scale, 25 * scale, 16), 
+                material
+            );
+            earpiece.position.x = -90 * scale;
+            
+            const mouthpiece = new THREE.Mesh(
+                new THREE.CylinderGeometry(35 * scale, 30 * scale, 25 * scale, 16), 
+                material
+            );
+            mouthpiece.position.x = 90 * scale;
+            
             handset.add(handle, earpiece, mouthpiece);
-            handset.position.y = 75;
+            handset.position.y = 75 * scale;
             phoneGroup.add(handset);
             
+            // Coiled cord - more detailed and realistic
             const cordPoints = [];
-            for (let i = 0; i < 80; i++) { 
-                const angle = i * 0.4;
-                const progress = i / 79;
-                cordPoints.push(new THREE.Vector3(-100 - Math.sin(progress * Math.PI * 0.5) * 50, 30 - progress * 50 + Math.sin(angle) * 10, Math.cos(angle) * 10));
+            for (let i = 0; i < 120; i++) { 
+                const angle = i * 0.6;
+                const progress = i / 119;
+                const spiralRadius = 15 * scale;
+                cordPoints.push(new THREE.Vector3(
+                    -100 * scale - Math.sin(progress * Math.PI * 0.5) * 80 * scale, 
+                    30 * scale - progress * 80 * scale + Math.sin(angle) * spiralRadius, 
+                    Math.cos(angle) * spiralRadius
+                ));
             }
             const cordCurve = new THREE.CatmullRomCurve3(cordPoints);
-            const cordGeometry = new THREE.TubeGeometry(cordCurve, 64, 4, 8, false);
-            const cord = new THREE.Mesh(cordGeometry, material);
+            const cordGeometry = new THREE.TubeGeometry(cordCurve, 96, 4 * scale, 8, false);
+            const cord = new THREE.Mesh(cordGeometry, new THREE.MeshPhongMaterial({ color: 0x444444 }));
             phoneGroup.add(cord);
+
+            // Add a subtle phone base shadow/reflection
+            const baseShadow = new THREE.Mesh(
+                new THREE.CylinderGeometry(150 * scale, 150 * scale, 2, 32),
+                new THREE.MeshPhongMaterial({ color: 0x999999, transparent: true, opacity: 0.3 })
+            );
+            baseShadow.position.y = -45 * scale;
+            phoneGroup.add(baseShadow);
 
             scene.add(phoneGroup);
 
-            renderer = new THREE.WebGLRenderer();
+            renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(width, height);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
             effect = AsciiEffect(renderer, ' .:-=+*#%@', { invert: true });
             effect.setSize(width, height);
@@ -227,12 +509,19 @@ const AsciiArtScene = () => {
             if (!renderer) return;
             animationFrameId = requestAnimationFrame(animate);
             const timer = Date.now() - start;
-            const ringSpeed = 0.2; 
-            const ringAmount = 1.5;
-            phoneGroup.position.y = Math.abs(Math.sin(timer * ringSpeed)) * ringAmount;
-            phoneGroup.rotation.x = Math.sin(timer * ringSpeed * 1.5) * 0.02;
-            phoneGroup.rotation.z = Math.cos(timer * ringSpeed * 2.0) * 0.02;
-            scene.rotation.y = timer * 0.0002;
+            
+            // More realistic phone ringing animation
+            const ringSpeed = 0.15; 
+            const ringAmount = 3;
+            const ringOffset = Math.sin(timer * ringSpeed) * ringAmount;
+            
+            phoneGroup.position.y = Math.abs(ringOffset);
+            phoneGroup.rotation.x = Math.sin(timer * ringSpeed * 1.2) * 0.03;
+            phoneGroup.rotation.z = Math.cos(timer * ringSpeed * 1.8) * 0.025;
+            
+            // Slow scene rotation
+            scene.rotation.y = timer * 0.0001;
+            
             effect.render(scene, camera);
         };
 
@@ -270,19 +559,19 @@ const AsciiArtScene = () => {
         };
     }, []);
 
-    return <div ref={mountRef} className="w-full aspect-video max-h-[500px] bg-[#D7E7E9] rounded-lg" />;
+    return <div ref={mountRef} className="ascii-scene" />;
 };
 
 const Navigation = () => {
     return (
-        <aside className="p-8 md:p-10 lg:p-12 sticky top-0 h-screen flex flex-col">
-            <h1 className="text-xl font-bold text-[#5A768A] tracking-wider mb-auto">LEONID GAVROVSKI</h1>
+        <aside className="navigation">
+            <h1 className="logo">LEONID GAVROVSKI</h1>
             <nav>
-                <ul className="space-y-3">
-                    <li><a href="#about" className="text-lg text-[#6F90A8] hover:text-[#5A768A] transition-colors duration-300">About</a></li>
-                    <li><a href="#work" className="text-lg text-[#6F90A8] hover:text-[#5A768A] transition-colors duration-300">Work</a></li>
-                    <li><a href="#achievements" className="text-lg text-[#6F90A8] hover:text-[#5A768A] transition-colors duration-300">Achievements</a></li>
-                    <li><a href="#contact" className="text-lg text-[#6F90A8] hover:text-[#5A768A] transition-colors duration-300">Contact</a></li>
+                <ul className="nav-list">
+                    <li className="nav-item"><a href="#about" className="nav-link">About</a></li>
+                    <li className="nav-item"><a href="#work" className="nav-link">Work</a></li>
+                    <li className="nav-item"><a href="#achievements" className="nav-link">Achievements</a></li>
+                    <li className="nav-item"><a href="#contact" className="nav-link">Contact</a></li>
                 </ul>
             </nav>
         </aside>
@@ -290,91 +579,92 @@ const Navigation = () => {
 };
 
 const Section = ({ id, title, children }) => (
-    <section id={id} className="min-h-[50vh] py-16 px-8 md:px-10 lg:px-12 border-t border-[#C2D7DD]">
-        <h2 className="text-5xl md:text-6xl lg:text-7xl font-bold text-[#5A768A] mb-12">{title}</h2>
+    <section id={id} className="section">
+        <h2 className="section-title">{title}</h2>
         {children}
     </section>
 );
 
 export default function App() {
-    const oceanBreezePalette = {
-        lightestBlue: '#D7E7E9',
-        lightBlue: '#C2D7DD',
-        greyBlue: '#A3B5C0',
-        midBlue: '#6F90A8',
-        darkestBlue: '#5A768A',
-    };
+    // Inject styles
+    useEffect(() => {
+        const styleSheet = document.createElement("style");
+        styleSheet.innerText = styles;
+        document.head.appendChild(styleSheet);
+        
+        return () => {
+            document.head.removeChild(styleSheet);
+        };
+    }, []);
 
     return (
-        <div style={{ backgroundColor: oceanBreezePalette.lightestBlue }} className="min-h-screen font-sans">
-            <div className="container mx-auto">
-                <div className="md:grid md:grid-cols-12">
-                    <div className="md:col-span-4 lg:col-span-3">
-                        <Navigation />
-                    </div>
-                    <main className="md:col-span-8 lg:col-span-9">
-                        <div id="about" className="relative min-h-screen flex flex-col py-16 px-8 md:px-10 lg:px-12">
-                             <h2 className="relative z-10 text-6xl md:text-7xl lg:text-8xl font-extrabold text-[#5A768A] mb-4 leading-tight">
+        <div>
+            <div className="container">
+                <div className="grid">
+                    <Navigation />
+                    <main className="main-content">
+                        <div id="about" className="hero-section">
+                             <h2 className="hero-title">
                                 CREATIVE
                                 <br />
                                 DESIGN &
                                 <br />
                                 DEVELOP.
                             </h2>
-                             <div className="absolute top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-full px-8 md:px-10 lg:px-12">
+                             <div className="ascii-container">
                                 <AsciiArtScene />
                              </div>
                         </div>
 
                         <Section title="SELECTED CLIENTS.">
-                            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 text-2xl font-bold text-[#6F90A8]">
+                            <div className="clients-grid">
                                 <p>Adidas</p><p>H&M</p><p>Unity</p>
                                 <p>Samsung</p><p>Ebay</p><p>Google</p>
                             </div>
                         </Section>
                         
                         <Section id="work" title="RECENT WORK.">
-                            <div className="space-y-12">
-                                <div className="group">
-                                    <p className="text-[#A3B5C0] text-sm mb-2">AUG. 11 2024</p>
-                                    <h3 className="text-3xl text-[#6F90A8] group-hover:text-[#5A768A] transition-colors duration-300 font-semibold">
-                                        E-commerce Platform Redesign <span className="inline-block transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                            <div>
+                                <div className="work-item">
+                                    <p className="work-date">AUG. 11 2024</p>
+                                    <h3 className="work-title">
+                                        E-commerce Platform Redesign <span className="arrow">→</span>
                                     </h3>
                                 </div>
-                                <div className="group">
-                                    <p className="text-[#A3B5C0] text-sm mb-2">MAY. 20 2024</p>
-                                    <h3 className="text-3xl text-[#6F90A8] group-hover:text-[#5A768A] transition-colors duration-300 font-semibold">
-                                        Interactive Data Visualization <span className="inline-block transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                                <div className="work-item">
+                                    <p className="work-date">MAY. 20 2024</p>
+                                    <h3 className="work-title">
+                                        Interactive Data Visualization <span className="arrow">→</span>
                                     </h3>
                                 </div>
-                                 <div className="group">
-                                    <p className="text-[#A3B5C0] text-sm mb-2">FEB. 01 2024</p>
-                                    <h3 className="text-3xl text-[#6F90A8] group-hover:text-[#5A768A] transition-colors duration-300 font-semibold">
-                                        Mobile Banking App UI/UX <span className="inline-block transform group-hover:translate-x-2 transition-transform duration-300">→</span>
+                                 <div className="work-item">
+                                    <p className="work-date">FEB. 01 2024</p>
+                                    <h3 className="work-title">
+                                        Mobile Banking App UI/UX <span className="arrow">→</span>
                                     </h3>
                                 </div>
                             </div>
                         </Section>
                         
                         <Section id="achievements" title="AWARDS & ACHIEVEMENTS.">
-                             <div className="space-y-8">
-                                <div>
-                                    <h3 className="text-2xl font-semibold text-[#6F90A8] mb-2">AWWWARDS</h3>
-                                    <ul className="text-[#6F90A8] list-disc list-inside">
+                             <div>
+                                <div className="achievements-list">
+                                    <h3 className="achievement-category">AWWWARDS</h3>
+                                    <ul className="achievement-items">
                                         <li>Site of the Day (x3)</li>
                                         <li>Developer Award</li>
                                         <li>Mobile Excellence</li>
                                     </ul>
                                 </div>
-                                <div>
-                                    <h3 className="text-2xl font-semibold text-[#6F90A8] mb-2">BEHANCE</h3>
-                                    <ul className="text-[#6F90A8] list-disc list-inside">
+                                <div className="achievements-list">
+                                    <h3 className="achievement-category">BEHANCE</h3>
+                                    <ul className="achievement-items">
                                         <li>Interaction Gallery (x2)</li>
                                     </ul>
                                 </div>
-                                 <div>
-                                    <h3 className="text-2xl font-semibold text-[#6F90A8] mb-2">THE WEBBY AWARDS</h3>
-                                    <ul className="text-[#6F90A8] list-disc list-inside">
+                                 <div className="achievements-list">
+                                    <h3 className="achievement-category">THE WEBBY AWARDS</h3>
+                                    <ul className="achievement-items">
                                         <li>Nominee (x1)</li>
                                         <li>Honoree (x1)</li>
                                     </ul>
@@ -383,26 +673,26 @@ export default function App() {
                         </Section>
 
                         <Section id="contact" title="CONTACT.">
-                             <div className="space-y-8">
+                             <div>
                                 <div>
-                                    <a href="mailto:cicada.support@cicadakatz.space" className="text-3xl md:text-4xl text-[#6F90A8] hover:text-[#5A768A] transition-colors duration-300">
+                                    <a href="mailto:cicada.support@cicadakatz.space" className="contact-email">
                                         cicada.support@cicadakatz.space
                                     </a>
-                                    <p className="text-[#A3B5C0] mt-2">Work inquiries only.</p>
+                                    <p className="contact-note">Work inquiries only.</p>
                                 </div>
                                  <div>
-                                    <h3 className="text-2xl font-semibold text-[#6F90A8] mb-2">Social</h3>
-                                    <ul className="text-[#6F90A8]">
-                                        <li><a href="#contact" className="hover:text-[#5A768A]">Instagram</a></li>
-                                        <li><a href="#contact" className="hover:text-[#5A768A]">Twitter</a></li>
-                                        <li><a href="#contact" className="hover:text-[#5A768A]">LinkedIn</a></li>
-                                        <li><a href="#contact" className="hover:text-[#5A768A]">Github</a></li>
+                                    <h3 className="achievement-category">Social</h3>
+                                    <ul className="social-list">
+                                        <li><a href="#contact" className="social-link">Instagram</a></li>
+                                        <li><a href="#contact" className="social-link">Twitter</a></li>
+                                        <li><a href="#contact" className="social-link">LinkedIn</a></li>
+                                        <li><a href="#contact" className="social-link">Github</a></li>
                                     </ul>
                                 </div>
                             </div>
                         </Section>
                         
-                        <footer className="text-center p-8 text-[#A3B5C0] text-sm">
+                        <footer className="footer">
                             &copy; 2025 CicadaKatz. All Rights Reserved.
                         </footer>
 
