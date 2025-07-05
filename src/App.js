@@ -122,11 +122,8 @@ const AsciiArtScene = () => {
             if (isInitialized) return;
             isInitialized = true;
 
-            // Adjust camera position and FOV for mobile
-            const isMobile = window.innerWidth <= 768;
-            const fov = isMobile ? 75 : 70;
-            camera = new THREE.PerspectiveCamera(fov, width / height, 1, 1000);
-            camera.position.set(0, isMobile ? 200 : 150, isMobile ? 500 : 400);
+            camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
+            camera.position.set(0, 150, 400); 
 
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0, 0, 0);
@@ -219,20 +216,9 @@ const AsciiArtScene = () => {
         };
         
         const onWindowResize = (width, height) => {
-            if (!renderer || !camera || !effect) return;
-            
-            const isMobile = window.innerWidth <= 768;
-            camera.fov = isMobile ? 75 : 70;
+            if (!renderer) return;
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
-            
-            // Adjust camera position for mobile
-            if (isMobile) {
-                camera.position.set(0, 200, 500);
-            } else {
-                camera.position.set(0, 150, 400);
-            }
-            
             renderer.setSize(width, height);
             effect.setSize(width, height);
         };
@@ -284,44 +270,25 @@ const AsciiArtScene = () => {
         };
     }, []);
 
-        const asciiSceneStyle = {
-            width: '100%',
-            height: '60vh',
-            minHeight: '300px',
-            maxHeight: '600px',
-            backgroundColor: '#D7E7E9',
-            borderRadius: '8px',
-            margin: '0 auto',
-            display: 'block',
-            overflow: 'hidden'
-        };
+    const asciiSceneStyle = {
+        width: '100%',
+        aspectRatio: '16/9',
+        maxHeight: '500px',
+        backgroundColor: '#D7E7E9',
+        borderRadius: '8px'
+    };
 
     return <div ref={mountRef} style={asciiSceneStyle} />;
 };
 
 const Navigation = () => {
     const asideStyle = {
-        padding: '1.5rem',
-        position: 'fixed',
+        padding: '2rem',
+        position: 'sticky',
         top: '0',
-        left: '0',
-        width: '100%',
-        backgroundColor: 'rgba(215, 231, 233, 0.95)',
-        zIndex: 1000,
-        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-        height: 'auto',
-        '@media (min-width: 768px)': {
-            position: 'fixed',
-            width: '280px',
-            height: '100vh',
-            boxShadow: 'none',
-            padding: '2rem',
-            backgroundColor: '#D7E7E9'
-        },
+        height: '100vh',
         display: 'flex',
-        flexDirection: 'column',
-        backdropFilter: 'blur(5px)',
-        WebkitBackdropFilter: 'blur(5px)'
+        flexDirection: 'column'
     };
 
     const headerStyle = {
@@ -329,12 +296,7 @@ const Navigation = () => {
         fontWeight: 'bold',
         color: '#5A768A',
         letterSpacing: '0.1em',
-        marginBottom: 'auto',
-        '@media (max-width: 767px)': {
-            fontSize: '1.1rem',
-            textAlign: 'center',
-            marginBottom: '1rem'
-        }
+        marginBottom: 'auto'
     };
 
     const navListStyle = {
@@ -422,33 +384,19 @@ const Section = ({ id, title, children }) => {
 
 export default function App() {
     const appStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        fontFamily: 'Inter, sans-serif',
-        color: '#5A768A',
-        lineHeight: '1.6',
         backgroundColor: '#D7E7E9',
-        overflowX: 'hidden'
+        minHeight: '100vh',
+        fontFamily: 'system-ui, -apple-system, sans-serif'
     };
 
     const containerStyle = {
         maxWidth: '1200px',
-        margin: '0 auto',
-        width: '100%',
-        padding: '0 1rem',
-        boxSizing: 'border-box',
-        '@media (min-width: 768px)': {
-            padding: '0 2rem'
-        }
+        margin: '0 auto'
     };
 
     const gridStyle = {
         display: 'grid',
-        gridTemplateColumns: '1fr 2fr',
-        '@media (max-width: 768px)': {
-            gridTemplateColumns: '1fr'
-        }
+        gridTemplateColumns: '1fr 2fr'
     };
 
     const heroSectionStyle = {
