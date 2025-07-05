@@ -620,27 +620,27 @@ export default function App() {
                             <div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>AUG. 11 2024</p>
-                                    <a href="#" style={workTitleStyle} className="work-title"
+                                    <button type="button" style={{...workTitleStyle, background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer', textAlign: 'left'}} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         E-commerce Platform Redesign →
-                                    </a>
+                                    </button>
                                 </div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>MAY. 20 2024</p>
-                                    <a href="#" style={workTitleStyle} className="work-title"
+                                    <button type="button" style={{...workTitleStyle, background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer', textAlign: 'left'}} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         Interactive Data Visualization →
-                                    </a>
+                                    </button>
                                 </div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>FEB. 01 2024</p>
-                                    <a href="#" style={workTitleStyle} className="work-title"
+                                    <button type="button" style={{...workTitleStyle, background: 'none', border: 'none', padding: 0, font: 'inherit', cursor: 'pointer', textAlign: 'left'}} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         Mobile Banking App UI/UX →
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </Section>
