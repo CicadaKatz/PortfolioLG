@@ -421,20 +421,6 @@ const Section = ({ id, title, children }) => {
 };
 
 export default function App() {
-    const navStyle = {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '1rem',
-        marginBottom: '2rem',
-        '@media (max-width: 767px)': {
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            justifyContent: 'center',
-            gap: '0.5rem 1rem',
-            marginBottom: '1rem'
-        }
-    };
-
     const appStyle = {
         display: 'flex',
         flexDirection: 'column',
@@ -456,7 +442,6 @@ export default function App() {
         paddingTop: '120px',
         '@media (min-width: 768px)': {
             padding: '2rem',
-            paddingTop: '2rem',
             marginLeft: '300px',
             paddingTop: '4rem'
         }
