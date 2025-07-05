@@ -404,26 +404,31 @@ export default function App() {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'center',
         padding: '4rem 2rem'
     };
 
+    const heroContentStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        gap: '3rem',
+        width: '100%'
+    };
+
     const heroTitleStyle = {
-        position: 'relative',
-        zIndex: '10',
         fontSize: '4.5rem',
         fontWeight: '800',
         color: '#5A768A',
-        marginBottom: '1rem',
-        lineHeight: '1.1'
+        marginBottom: '0',
+        lineHeight: '1.1',
+        zIndex: 10
     };
 
     const heroAsciiStyle = {
-        position: 'absolute',
-        top: '45%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
         width: '100%',
-        padding: '0 2rem'
+        maxWidth: '500px',
+        alignSelf: 'center'
     };
 
     const clientsGridStyle = {
@@ -499,31 +504,78 @@ export default function App() {
         fontSize: '0.875rem'
     };
 
-    // Responsive styles for mobile
+    // Enhanced responsive styles
     const mobileStyles = `
         @media (max-width: 768px) {
             .grid-container {
                 grid-template-columns: 1fr !important;
             }
             .hero-title {
-                font-size: 3rem !important;
+                font-size: 2.5rem !important;
+                text-align: center !important;
+            }
+            .hero-content {
+                align-items: center !important;
+                text-align: center !important;
+                gap: 2rem !important;
             }
             .section-title {
                 font-size: 2.5rem !important;
             }
             .clients-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1.5rem !important;
+                font-size: 1.2rem !important;
             }
             .navigation {
                 position: static !important;
                 height: auto !important;
                 padding: 1rem !important;
+                border-bottom: 1px solid #C2D7DD !important;
+            }
+            .nav-header {
+                font-size: 1rem !important;
+                text-align: center !important;
+                margin-bottom: 1rem !important;
+            }
+            .nav-list {
+                display: flex !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
+                gap: 1rem !important;
+            }
+            .nav-item {
+                margin-bottom: 0 !important;
             }
             .section {
                 padding: 2rem 1rem !important;
             }
             .hero-section {
                 padding: 2rem 1rem !important;
+                min-height: 60vh !important;
+            }
+            .contact-email {
+                font-size: 1.5rem !important;
+                word-break: break-word !important;
+            }
+            .work-title {
+                font-size: 1.5rem !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem !important;
+            }
+            .section-title {
+                font-size: 2rem !important;
+            }
+            .clients-grid {
+                grid-template-columns: 1fr !important;
+                font-size: 1rem !important;
+            }
+            .contact-email {
+                font-size: 1.2rem !important;
             }
         }
     `;
@@ -540,15 +592,17 @@ export default function App() {
                     </div>
                     <main>
                         <div id="about" style={heroSectionStyle} className="hero-section">
-                            <h2 style={heroTitleStyle} className="hero-title">
-                                CREATIVE
-                                <br />
-                                DESIGN &
-                                <br />
-                                DEVELOP.
-                            </h2>
-                            <div style={heroAsciiStyle}>
-                                <AsciiArtScene />
+                            <div style={heroContentStyle} className="hero-content">
+                                <h2 style={heroTitleStyle} className="hero-title">
+                                    CREATIVE
+                                    <br />
+                                    DESIGN &
+                                    <br />
+                                    DEVELOP.
+                                </h2>
+                                <div style={heroAsciiStyle}>
+                                    <AsciiArtScene />
+                                </div>
                             </div>
                         </div>
 
@@ -566,7 +620,7 @@ export default function App() {
                             <div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>AUG. 11 2024</p>
-                                    <a href="#" style={workTitleStyle}
+                                    <a href="#" style={workTitleStyle} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         E-commerce Platform Redesign →
@@ -574,7 +628,7 @@ export default function App() {
                                 </div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>MAY. 20 2024</p>
-                                    <a href="#" style={workTitleStyle}
+                                    <a href="#" style={workTitleStyle} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         Interactive Data Visualization →
@@ -582,7 +636,7 @@ export default function App() {
                                 </div>
                                 <div style={workItemStyle}>
                                     <p style={workDateStyle}>FEB. 01 2024</p>
-                                    <a href="#" style={workTitleStyle}
+                                    <a href="#" style={workTitleStyle} className="work-title"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         Mobile Banking App UI/UX →
@@ -620,7 +674,7 @@ export default function App() {
                         <Section id="contact" title="CONTACT.">
                             <div>
                                 <div style={{marginBottom: '2rem'}}>
-                                    <a href="mailto:cicada.support@cicadakatz.space" style={contactEmailStyle}
+                                    <a href="mailto:cicada.support@cicadakatz.space" style={contactEmailStyle} className="contact-email"
                                        onMouseEnter={(e) => e.target.style.color = '#5A768A'}
                                        onMouseLeave={(e) => e.target.style.color = '#6F90A8'}>
                                         cicada.support@cicadakatz.space
