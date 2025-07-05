@@ -122,8 +122,11 @@ const AsciiArtScene = () => {
             if (isInitialized) return;
             isInitialized = true;
 
-            camera = new THREE.PerspectiveCamera(70, width / height, 1, 1000);
-            camera.position.set(0, 150, 400); 
+            // Adjust camera position and FOV for mobile
+            const isMobile = window.innerWidth <= 768;
+            const fov = isMobile ? 75 : 70;
+            camera = new THREE.PerspectiveCamera(fov, width / height, 1, 1000);
+            camera.position.set(0, isMobile ? 200 : 150, isMobile ? 500 : 400);
 
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0, 0, 0);
@@ -216,9 +219,20 @@ const AsciiArtScene = () => {
         };
         
         const onWindowResize = (width, height) => {
-            if (!renderer) return;
+            if (!renderer || !camera || !effect) return;
+            
+            const isMobile = window.innerWidth <= 768;
+            camera.fov = isMobile ? 75 : 70;
             camera.aspect = width / height;
             camera.updateProjectionMatrix();
+            
+            // Adjust camera position for mobile
+            if (isMobile) {
+                camera.position.set(0, 200, 500);
+            } else {
+                camera.position.set(0, 150, 400);
+            }
+            
             renderer.setSize(width, height);
             effect.setSize(width, height);
         };
@@ -270,25 +284,44 @@ const AsciiArtScene = () => {
         };
     }, []);
 
-    const asciiSceneStyle = {
-        width: '100%',
-        aspectRatio: '16/9',
-        maxHeight: '500px',
-        backgroundColor: '#D7E7E9',
-        borderRadius: '8px'
-    };
+        const asciiSceneStyle = {
+            width: '100%',
+            height: '60vh',
+            minHeight: '300px',
+            maxHeight: '600px',
+            backgroundColor: '#D7E7E9',
+            borderRadius: '8px',
+            margin: '0 auto',
+            display: 'block',
+            overflow: 'hidden'
+        };
 
     return <div ref={mountRef} style={asciiSceneStyle} />;
 };
 
 const Navigation = () => {
     const asideStyle = {
-        padding: '2rem',
-        position: 'sticky',
+        padding: '1.5rem',
+        position: 'fixed',
         top: '0',
-        height: '100vh',
+        left: '0',
+        width: '100%',
+        backgroundColor: 'rgba(215, 231, 233, 0.95)',
+        zIndex: 1000,
+        boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+        height: 'auto',
+        '@media (min-width: 768px)': {
+            position: 'fixed',
+            width: '280px',
+            height: '100vh',
+            boxShadow: 'none',
+            padding: '2rem',
+            backgroundColor: '#D7E7E9'
+        },
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        backdropFilter: 'blur(5px)',
+        WebkitBackdropFilter: 'blur(5px)'
     };
 
     const headerStyle = {
@@ -296,7 +329,12 @@ const Navigation = () => {
         fontWeight: 'bold',
         color: '#5A768A',
         letterSpacing: '0.1em',
-        marginBottom: 'auto'
+        marginBottom: 'auto',
+        '@media (max-width: 767px)': {
+            fontSize: '1.1rem',
+            textAlign: 'center',
+            marginBottom: '1rem'
+        }
     };
 
     const navListStyle = {
@@ -383,10 +421,45 @@ const Section = ({ id, title, children }) => {
 };
 
 export default function App() {
+    const navStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        marginBottom: '2rem',
+        '@media (max-width: 767px)': {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: '0.5rem 1rem',
+            marginBottom: '1rem'
+        }
+    };
+
     const appStyle = {
-        backgroundColor: '#D7E7E9',
+        display: 'flex',
+        flexDirection: 'column',
         minHeight: '100vh',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
+        fontFamily: 'Inter, sans-serif',
+        color: '#5A768A',
+        lineHeight: '1.6',
+        backgroundColor: '#D7E7E9',
+        overflowX: 'hidden'
+    };
+
+    const mainStyle = {
+        flex: 1,
+        padding: '1rem',
+        maxWidth: '1200px',
+        margin: '0 auto',
+        width: '100%',
+        boxSizing: 'border-box',
+        paddingTop: '120px',
+        '@media (min-width: 768px)': {
+            padding: '2rem',
+            paddingTop: '2rem',
+            marginLeft: '300px',
+            paddingTop: '4rem'
+        }
     };
 
     const containerStyle = {
