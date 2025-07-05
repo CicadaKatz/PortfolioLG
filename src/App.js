@@ -432,29 +432,23 @@ export default function App() {
         overflowX: 'hidden'
     };
 
-    const mainStyle = {
-        flex: 1,
-        padding: '1rem',
+    const containerStyle = {
         maxWidth: '1200px',
         margin: '0 auto',
         width: '100%',
+        padding: '0 1rem',
         boxSizing: 'border-box',
-        paddingTop: '120px',
         '@media (min-width: 768px)': {
-            padding: '2rem',
-            marginLeft: '300px',
-            paddingTop: '4rem'
+            padding: '0 2rem'
         }
-    };
-
-    const containerStyle = {
-        maxWidth: '1200px',
-        margin: '0 auto'
     };
 
     const gridStyle = {
         display: 'grid',
-        gridTemplateColumns: '1fr 2fr'
+        gridTemplateColumns: '1fr 2fr',
+        '@media (max-width: 768px)': {
+            gridTemplateColumns: '1fr'
+        }
     };
 
     const heroSectionStyle = {
